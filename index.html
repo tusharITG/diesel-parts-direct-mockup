@@ -531,6 +531,52 @@ button { cursor: pointer; }
   animation: spin 0.6s linear infinite;
 }
 
+/* Waiting for payment state */
+.waiting-payment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+}
+.waiting-payment-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #eef6ff;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  animation: pulse-icon 2s ease-in-out infinite;
+}
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.7; }
+}
+.waiting-payment-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303030;
+  margin-bottom: 8px;
+}
+.waiting-payment-sub {
+  font-size: 14px;
+  color: #737373;
+  max-width: 360px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.waiting-payment-link {
+  font-size: 13px;
+  color: #005bd3;
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-top: 12px;
+  font-family: inherit;
+}
+.waiting-payment-link:hover { text-decoration: underline; }
+
 /* ═══════════════════════════════════════════════════════════════
    SCROLLBAR
    ═══════════════════════════════════════════════════════════════ */
@@ -804,6 +850,7 @@ button { cursor: pointer; }
             <div class="card-subtitle mb-8">Notes are visible to staff and saved on the order.</div>
             <textarea class="form-textarea" placeholder="Add internal notes, special instructions, core return info..." oninput="window.state.orderNotes=this.value"></textarea>
           </div>
+          <div class="card" id="confirmation-email-card"></div>
           <div class="card">
             <div class="card-header mb-0">
               <div class="card-title">Sales Attribution</div>
@@ -947,6 +994,8 @@ const state = {
   customerSearchQuery: '',
   paymentMethod: 'invoice',
   orderNotes: '',
+  confirmationEmailSent: false,
+  confirmationEmailSentAt: null,
   historySearchQuery: '',
   historyRepFilter: 'all',
   historyStatusFilter: 'all',
@@ -1118,6 +1167,8 @@ window.addToCart = function(productId) {
   } else {
     state.cart.push({ product, quantity: 1 });
   }
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   // Button feedback
   const btn = document.getElementById('add-btn-' + productId);
   if (btn) {
@@ -1132,6 +1183,8 @@ window.addToCart = function(productId) {
 window.removeFromCart = function(productId) {
   const item = state.cart.find(c => c.product.id === productId);
   state.cart = state.cart.filter(c => c.product.id !== productId);
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   if (item) showToast('Item removed from cart.', 'info');
   renderCart();
 };
@@ -1151,6 +1204,8 @@ window.updateCartQty = function(productId, val) {
     if (warn) warn.classList.add('view-hidden');
   }
   item.quantity = qty;
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   renderCart();
 };
 
@@ -1230,6 +1285,8 @@ function renderSelectedCustomer(selectedViewId, formViewId) {
 window.changeCustomer = function(selectedViewId, formViewId) {
   state.selectedCustomer = null;
   state.isNewCustomer = false;
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   document.getElementById(selectedViewId).classList.add('view-hidden');
   document.getElementById(formViewId).classList.remove('view-hidden');
   updateStep2Button();
@@ -1277,6 +1334,8 @@ function renderCustomerResults(results) {
 window.selectCustomer = function(customerId) {
   state.selectedCustomer = CUSTOMERS.find(c => c.id === customerId);
   state.isNewCustomer = false;
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   showToast(`Customer selected: ${state.selectedCustomer.company}`);
   renderSelectedCustomer('customer-selected-view', 'customer-search-view');
   updateStep2Button();
@@ -1340,6 +1399,8 @@ window.saveNewCustomer = function() {
     country: f.country
   };
   state.isNewCustomer = true;
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   showToast(`Customer created: ${state.selectedCustomer.company}`);
   renderSelectedCustomer('new-customer-selected-view', 'new-customer-form');
   updateStep2Button();
@@ -1402,6 +1463,8 @@ function renderStep3() {
       <div class="totals-row total-grand"><span>Total</span><span class="totals-value">${fmt(total)}</span></div>
     </div>`;
 
+  renderConfirmationEmailSection();
+
   // Payment options
   const options = [
     { key:'invoice', label:'Send Invoice to Customer', desc:'Customer receives an email with a secure Shopify checkout link. They enter their own payment info and complete the purchase.', badge:'Recommended' },
@@ -1422,6 +1485,45 @@ function renderStep3() {
   $('#payment-options').innerHTML = payHtml;
 }
 
+function renderConfirmationEmailSection() {
+  const c = state.selectedCustomer;
+  if (!c) return;
+
+  const sent = state.confirmationEmailSent;
+  const sentAt = state.confirmationEmailSentAt
+    ? new Date(state.confirmationEmailSentAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    : '';
+  const bannerClass = sent ? 'banner-success' : 'banner-info';
+  const bannerMessage = sent
+    ? `Confirmation email sent to <strong>${c.email}</strong>${sentAt ? ` at ${sentAt}` : ''}.`
+    : `Send a confirmation email to <strong>${c.email}</strong> so the customer can verify all details before you place the order.`;
+  const buttonLabel = sent ? 'Resend Confirmation Email' : 'Send Confirmation Email';
+
+  $('#confirmation-email-card').innerHTML = `
+    <div class="card-header mb-0">
+      <div class="card-title">Customer Confirmation</div>
+    </div>
+    <div class="card-subtitle mb-8">Confirm order details with the customer before final placement.</div>
+    <div class="${bannerClass} mt-12">${bannerMessage}</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px">
+      <div class="text-muted">Recipient: <strong style="color:#303030">${c.email}</strong></div>
+      <button class="btn-secondary" onclick="window.sendConfirmationEmail()">${buttonLabel}</button>
+    </div>
+  `;
+}
+
+window.sendConfirmationEmail = function() {
+  const c = state.selectedCustomer;
+  if (!c || !c.email) {
+    showToast('Customer email is missing. Add an email before sending confirmation.', 'error');
+    return;
+  }
+  state.confirmationEmailSent = true;
+  state.confirmationEmailSentAt = Date.now();
+  renderConfirmationEmailSection();
+  showToast(`Confirmation email sent to ${c.email}`);
+};
+
 window.selectPayment = function(method) {
   state.paymentMethod = method;
   renderStep3();
@@ -1434,11 +1536,46 @@ window.placeOrder = function() {
   const btn = $('#btn-place-order');
   btn.innerHTML = '<span class="spinner"></span> Placing Order...';
   btn.disabled = true;
-  setTimeout(() => {
-    state.placingOrder = false;
-    showToast('Order created successfully!');
-    window.goToStep(4);
-  }, 1500);
+
+  if (state.paymentMethod === 'take-payment') {
+    // Open Shopify checkout in new tab
+    setTimeout(() => {
+      state.placingOrder = false;
+      showToast('Opening Shopify checkout in a new tab...', 'info');
+      window.open('checkout.html', '_blank');
+      showWaitingForPayment();
+    }, 800);
+  } else {
+    setTimeout(() => {
+      state.placingOrder = false;
+      showToast('Order created successfully!');
+      window.goToStep(4);
+    }, 1500);
+  }
+};
+
+/* ───── WAITING FOR PAYMENT STATE ───── */
+function showWaitingForPayment() {
+  const container = document.querySelector('#step-3 .centered-medium');
+  container.innerHTML = `
+    <div class="card">
+      <div class="waiting-payment">
+        <div class="waiting-payment-icon">🕐</div>
+        <div class="waiting-payment-title">Checkout opened in a new tab</div>
+        <div class="waiting-payment-sub">Complete the payment in the Shopify checkout tab, then click below to continue.</div>
+        <button class="btn-primary" onclick="window.completePaymentFlow()" style="min-width:260px">Payment Complete — Continue →</button>
+        <button class="waiting-payment-link" onclick="window.cancelPaymentWait()">Cancel &amp; Go Back</button>
+      </div>
+    </div>`;
+}
+
+window.completePaymentFlow = function() {
+  showToast('Order placed and payment received!');
+  window.goToStep(4);
+};
+
+window.cancelPaymentWait = function() {
+  renderStep3();
 };
 
 /* ───── STEP 4: CONFIRMATION ───── */
@@ -1482,6 +1619,8 @@ window.placeAnotherOrder = function() {
   state.customerSearchQuery = '';
   state.paymentMethod = 'invoice';
   state.orderNotes = '';
+  state.confirmationEmailSent = false;
+  state.confirmationEmailSentAt = null;
   state.searchQuery = '';
   state.placingOrder = false;
   // Reset UI fields
