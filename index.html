@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Rep Portal — Diesel Parts Direct</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  color: #303030;
+  background: #f1f1f1;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: #005bd3; text-decoration: none; cursor: pointer; }
+a:hover { text-decoration: underline; }
+input, select, textarea, button { font-family: inherit; font-size: 13px; }
+button { cursor: pointer; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN CHROME — TOP BAR
+   ═══════════════════════════════════════════════════════════════ */
+.admin-topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px; background: #1a1a1a;
+  display: flex; align-items: center; padding: 0 12px;
+  gap: 12px;
+}
+.topbar-logo { display: flex; align-items: center; gap: 10px; padding: 0 4px; flex-shrink: 0; }
+.topbar-logo svg { width: 28px; height: 28px; }
+.topbar-search {
+  flex: 1; max-width: 580px; margin: 0 auto;
+  background: #303030; border: 1px solid #505050; border-radius: 8px;
+  display: flex; align-items: center; padding: 0 12px; height: 36px;
+  color: #b5b5b5; font-size: 13px; cursor: text;
+  transition: border-color 0.15s;
+}
+.topbar-search:hover { border-color: #666; }
+.topbar-search svg { width: 16px; height: 16px; margin-right: 8px; flex-shrink: 0; opacity: 0.6; }
+.topbar-search span { opacity: 0.7; }
+.topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
+.topbar-icon-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: none;
+  background: transparent; color: #b5b5b5; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.topbar-icon-btn:hover { background: #303030; }
+.topbar-icon-btn svg { width: 20px; height: 20px; }
+.topbar-store-btn {
+  height: 36px; border-radius: 8px; border: none;
+  background: #303030; color: #e3e3e3; padding: 0 10px;
+  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500;
+  transition: background 0.15s;
+}
+.topbar-store-btn:hover { background: #404040; }
+.store-avatar {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: #2E86AB; color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: 0.3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN CHROME — SIDEBAR
+   ═══════════════════════════════════════════════════════════════ */
+.admin-sidebar {
+  position: fixed; top: 56px; left: 0; bottom: 0; z-index: 90;
+  width: 240px; background: #f7f7f7; border-right: 1px solid #e3e3e3;
+  overflow-y: auto; padding: 12px 8px;
+}
+.sidebar-nav { list-style: none; }
+.sidebar-nav li { margin-bottom: 1px; }
+.sidebar-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 10px; border-radius: 8px; font-size: 13px;
+  color: #303030; font-weight: 500; cursor: pointer;
+  transition: background 0.12s;
+  text-decoration: none;
+  position: relative;
+}
+.sidebar-nav-item:hover { background: #ebebeb; text-decoration: none; }
+.sidebar-nav-item.active { background: #e3e3e3; font-weight: 600; }
+.sidebar-nav-item.dimmed { color: #919191; font-weight: 400; }
+.sidebar-nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: 0.75; }
+.sidebar-nav-item .nav-badge {
+  background: #e4edff; color: #1f5199; font-size: 11px; font-weight: 600;
+  padding: 1px 7px; border-radius: 10px; margin-left: auto;
+}
+.sidebar-section-label {
+  font-size: 11px; font-weight: 600; color: #919191;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 16px 10px 6px; margin-top: 4px;
+}
+.sidebar-sub-items { list-style: none; padding-left: 0; }
+.sidebar-sub-item {
+  display: block; padding: 6px 10px 6px 40px; border-radius: 8px;
+  font-size: 13px; color: #616161; cursor: pointer;
+  transition: background 0.12s; text-decoration: none;
+}
+.sidebar-sub-item:hover { background: #ebebeb; color: #303030; text-decoration: none; }
+.sidebar-sub-item.active { background: #e3e3e3; color: #303030; font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN CHROME — CONTENT AREA
+   ═══════════════════════════════════════════════════════════════ */
+.admin-main {
+  position: fixed; top: 56px; left: 240px; right: 0; bottom: 0;
+  background: #f1f1f1; overflow-y: auto;
+}
+.admin-content {
+  max-width: 1000px; margin: 0 auto;
+  padding: 0 24px 40px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   APP HEADER (persistent)
+   ═══════════════════════════════════════════════════════════════ */
+.app-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0 16px;
+  border-bottom: 1px solid #e3e3e3;
+  margin-bottom: 20px;
+}
+.app-header-title { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+.app-header-user {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #616161;
+}
+.app-header-user-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #e3e3e3; display: flex; align-items: center; justify-content: center;
+}
+.app-header-user-icon svg { width: 16px; height: 16px; color: #616161; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTEXT BAR
+   ═══════════════════════════════════════════════════════════════ */
+.context-bar {
+  background: #fff; border: 1px solid #e3e3e3; border-radius: 10px;
+  padding: 10px 16px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #616161;
+}
+.context-bar svg { width: 16px; height: 16px; flex-shrink: 0; color: #919191; }
+.context-bar strong { color: #303030; font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STEPPER
+   ═══════════════════════════════════════════════════════════════ */
+.stepper {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 24px; padding: 8px 0;
+}
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.step-dot.inactive { background: #e3e3e3; color: #919191; }
+.step-dot.active { background: #303030; color: #fff; }
+.step-dot.completed { background: #1f7a3f; color: #fff; }
+.step-connector { width: 40px; height: 2px; background: #e3e3e3; flex-shrink: 0; }
+.step-connector.completed { background: #1f7a3f; }
+.step-label {
+  font-size: 11px; color: #919191; text-align: center;
+  margin-top: 4px; white-space: nowrap;
+}
+.step-group { display: flex; flex-direction: column; align-items: center; }
+.step-group.active .step-label { color: #303030; font-weight: 600; }
+.step-group.completed .step-label { color: #1f7a3f; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CARDS
+   ═══════════════════════════════════════════════════════════════ */
+.card {
+  background: #fff; border: 1px solid #e3e3e3; border-radius: 12px;
+  padding: 20px 24px; margin-bottom: 16px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+.card-subtitle { font-size: 12px; color: #919191; margin-top: 2px; }
+.card-badge {
+  font-size: 11px; font-weight: 600; background: #e3e3e3; color: #616161;
+  padding: 2px 8px; border-radius: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════════════════════ */
+.btn-primary {
+  background: #303030; color: #fff; border: none; border-radius: 8px;
+  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: #1a1a1a; }
+.btn-primary:disabled { background: #b5b5b5; cursor: not-allowed; }
+.btn-primary:disabled:hover { background: #b5b5b5; }
+.btn-secondary {
+  background: #fff; color: #303030; border: 1px solid #c9cccf; border-radius: 8px;
+  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: #f7f7f7; }
+.btn-sm {
+  height: 30px; padding: 0 12px; font-size: 12px;
+}
+.btn-full { width: 100%; justify-content: center; }
+.btn-add {
+  background: #fff; color: #303030; border: 1px solid #c9cccf; border-radius: 6px;
+  height: 30px; padding: 0 12px; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-add:hover { background: #f7f7f7; }
+.btn-add.added { color: #1f7a3f; border-color: #a3d9b1; background: #e4f5e9; }
+.btn-add:disabled { background: #f1f1f1; color: #919191; border-color: #e3e3e3; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FORMS
+   ═══════════════════════════════════════════════════════════════ */
+.form-input, .form-select, .form-textarea {
+  border: 1px solid #d4d4d4; border-radius: 8px;
+  padding: 7px 10px; font-size: 13px; font-family: inherit;
+  width: 100%; transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fff; color: #303030;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none; border-color: #005bd3;
+  box-shadow: 0 0 0 2px rgba(0,91,211,0.15);
+}
+.form-input.error, .form-select.error { border-color: #d72c0d; }
+.form-input.error:focus { box-shadow: 0 0 0 2px rgba(215,44,13,0.15); }
+.form-error { font-size: 12px; color: #d72c0d; margin-top: 4px; }
+.form-textarea { resize: vertical; min-height: 60px; }
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: #303030; margin-bottom: 4px; }
+.form-row { display: flex; gap: 12px; }
+.form-row > .form-group { flex: 1; }
+.search-input-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.search-input-wrap svg {
+  position: absolute; left: 10px; width: 16px; height: 16px; color: #919191;
+  pointer-events: none;
+}
+.search-input-wrap .form-input { padding-left: 34px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES
+   ═══════════════════════════════════════════════════════════════ */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+.badge-green { background: #e4f5e9; color: #1f7a3f; }
+.badge-red { background: #fde8e8; color: #d72c0d; }
+.badge-blue { background: #e4edff; color: #1f5199; }
+.badge-yellow { background: #fff5e1; color: #9e6c00; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BANNERS
+   ═══════════════════════════════════════════════════════════════ */
+.banner-info {
+  background: #eef6ff; border: 1px solid #bbd4f0; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: #1f5199;
+}
+.banner-success {
+  background: #e4f5e9; border: 1px solid #a3d9b1; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: #1f7a3f;
+}
+.banner-error {
+  background: #fde8e8; border: 1px solid #f5b4b4; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; color: #d72c0d;
+}
+.banner-success-lg {
+  background: #e4f5e9; border: 1px solid #a3d9b1; border-radius: 12px;
+  padding: 16px 20px; font-size: 14px; color: #1f7a3f; font-weight: 600;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+   ═══════════════════════════════════════════════════════════════ */
+.toast-container {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding-top: 0; pointer-events: none;
+}
+.toast {
+  padding: 10px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  animation: slideDown 0.25s ease-out;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.toast-success { background: #e4f5e9; border: 1px solid #a3d9b1; color: #1f7a3f; }
+.toast-error { background: #fde8e8; border: 1px solid #f5b4b4; color: #d72c0d; }
+.toast-info { background: #eef6ff; border: 1px solid #bbd4f0; color: #1f5199; }
+@keyframes slideDown {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DATA GRID TABLE
+   ═══════════════════════════════════════════════════════════════ */
+.data-grid {
+  width: 100%; border-collapse: collapse;
+}
+.data-grid thead th {
+  background: #fafafa; text-align: left;
+  padding: 10px 12px; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.3px; color: #616161;
+  border-bottom: 1px solid #e3e3e3;
+  white-space: nowrap;
+}
+.data-grid tbody td {
+  padding: 10px 12px; border-bottom: 1px solid #f1f1f1;
+  font-size: 13px; vertical-align: middle;
+}
+.data-grid tbody tr:hover { background: #fafafa; }
+.data-grid .num { font-variant-numeric: tabular-nums; text-align: right; }
+.data-grid .actions { text-align: right; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB TOGGLE (customer search modes)
+   ═══════════════════════════════════════════════════════════════ */
+.tab-toggle {
+  display: inline-flex; background: #f1f1f1; border-radius: 8px;
+  padding: 3px; gap: 2px; margin-bottom: 16px;
+}
+.tab-toggle-btn {
+  padding: 6px 14px; border-radius: 6px; border: none;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  background: transparent; color: #616161;
+  transition: all 0.15s;
+}
+.tab-toggle-btn.active {
+  background: #fff; color: #303030; font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #e3e3e3;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 1 — TWO COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+.split-layout { display: flex; gap: 16px; align-items: flex-start; }
+.split-left { flex: 6; min-width: 0; }
+.split-right { flex: 4; min-width: 0; position: sticky; top: 0; }
+
+/* Product search results */
+.product-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid #f1f1f1;
+}
+.product-row:last-child { border-bottom: none; }
+.product-img-placeholder {
+  width: 40px; height: 40px; border-radius: 6px;
+  background: #e3e3e3; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.product-img-placeholder svg { width: 18px; height: 18px; color: #919191; }
+.product-info { flex: 1; min-width: 0; }
+.product-title { font-size: 13px; font-weight: 600; color: #303030; }
+.product-part { font-size: 12px; color: #616161; margin-top: 1px; }
+.product-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.product-price { font-size: 13px; font-weight: 600; color: #303030; white-space: nowrap; }
+
+/* Cart items */
+.cart-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid #f1f1f1;
+}
+.cart-item:last-child { border-bottom: none; }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-title { font-size: 13px; font-weight: 500; color: #303030; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cart-item-part { font-size: 11px; color: #919191; }
+.cart-qty-input {
+  width: 52px; height: 30px; border: 1px solid #d4d4d4; border-radius: 6px;
+  text-align: center; font-size: 13px; font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.cart-qty-input:focus { outline: none; border-color: #005bd3; box-shadow: 0 0 0 2px rgba(0,91,211,0.15); }
+.cart-item-price { font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; min-width: 65px; text-align: right; }
+.cart-remove {
+  background: none; border: none; color: #919191; cursor: pointer;
+  font-size: 16px; padding: 2px 4px; line-height: 1;
+  transition: color 0.15s; flex-shrink: 0;
+}
+.cart-remove:hover { color: #d72c0d; }
+.cart-subtotal {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 12px; margin-top: 4px; border-top: 1px solid #e3e3e3;
+}
+.cart-subtotal-label { font-size: 14px; font-weight: 600; }
+.cart-subtotal-value { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.cart-note { font-size: 12px; color: #919191; margin-top: 8px; }
+.empty-state { text-align: center; color: #919191; font-size: 13px; padding: 32px 16px; }
+.stock-warning { font-size: 11px; color: #9e6c00; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 2 — CUSTOMER
+   ═══════════════════════════════════════════════════════════════ */
+.customer-result {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: 8px; cursor: pointer;
+  transition: background 0.12s; border: 1px solid transparent;
+}
+.customer-result:hover { background: #f7f7f7; border-color: #e3e3e3; }
+.customer-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #e3e3e3; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: #616161; flex-shrink: 0;
+}
+.customer-result-info { flex: 1; }
+.customer-result-company { font-size: 13px; font-weight: 600; }
+.customer-result-name { font-size: 12px; color: #616161; }
+.customer-selected-card {
+  border: 1px solid #a3d9b1; background: #f9fdfb; border-radius: 8px;
+  padding: 16px;
+}
+.customer-selected-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.customer-detail-row { font-size: 13px; color: #616161; margin-bottom: 4px; }
+.customer-detail-row strong { color: #303030; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 3 — PAYMENT OPTIONS
+   ═══════════════════════════════════════════════════════════════ */
+.payment-option {
+  border: 1px solid #e3e3e3; border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 8px; cursor: pointer;
+  transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px;
+}
+.payment-option:hover { border-color: #c9cccf; }
+.payment-option.selected {
+  border-color: #005bd3; background: #f0f6ff;
+  border-left: 3px solid #005bd3;
+}
+.payment-radio {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #c9cccf; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.payment-option.selected .payment-radio {
+  border-color: #005bd3;
+}
+.payment-option.selected .payment-radio::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: #005bd3;
+}
+.payment-label { font-size: 13px; font-weight: 600; }
+.payment-desc { font-size: 12px; color: #616161; margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   STEP 4 — CONFIRMATION
+   ═══════════════════════════════════════════════════════════════ */
+.detail-grid { display: grid; grid-template-columns: 140px 1fr; gap: 8px 16px; font-size: 13px; }
+.detail-label { color: #919191; font-weight: 500; }
+.detail-value { color: #303030; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ORDER HISTORY
+   ═══════════════════════════════════════════════════════════════ */
+.filter-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.filter-bar .form-input { max-width: 220px; }
+.filter-bar .form-select { max-width: 180px; height: 36px; }
+.rep-circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #e3e3e3; font-size: 10px; font-weight: 700; color: #616161;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION ROW
+   ═══════════════════════════════════════════════════════════════ */
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px; padding-top: 16px;
+}
+.nav-row-center { justify-content: center; gap: 12px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY
+   ═══════════════════════════════════════════════════════════════ */
+.view-hidden { display: none !important; }
+.text-muted { color: #919191; }
+.text-center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-0 { margin-bottom: 0; }
+.divider { border: none; border-top: 1px solid #e3e3e3; margin: 16px 0; }
+.centered-narrow { max-width: 700px; margin: 0 auto; }
+.centered-medium { max-width: 800px; margin: 0 auto; }
+.totals-section { text-align: right; padding-top: 12px; border-top: 1px solid #e3e3e3; margin-top: 8px; }
+.totals-row { display: flex; justify-content: flex-end; gap: 32px; font-size: 13px; padding: 4px 12px; }
+.totals-row.total-grand { font-size: 16px; font-weight: 700; border-top: 1px solid #e3e3e3; padding-top: 10px; margin-top: 6px; }
+.totals-label { color: #616161; }
+.totals-value { font-variant-numeric: tabular-nums; min-width: 80px; text-align: right; }
+
+/* Spinner for placing order */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════ */
+.admin-main::-webkit-scrollbar { width: 8px; }
+.admin-main::-webkit-scrollbar-track { background: transparent; }
+.admin-main::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.admin-main::-webkit-scrollbar-thumb:hover { background: #aaa; }
+.admin-sidebar::-webkit-scrollbar { width: 6px; }
+.admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+</style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ADMIN CHROME — TOP BAR
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="admin-topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 0C6.268 0 0 6.268 0 14c0 4.662 2.28 8.793 5.784 11.337L14 32l8.216-6.663C25.72 22.793 28 18.662 28 14 28 6.268 21.732 0 14 0zm0 20a6 6 0 110-12 6 6 0 010 12z" fill="#95BF47"/>
+    </svg>
+  </div>
+  <div class="topbar-search">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
+    <span>Search</span>
+  </div>
+  <div class="topbar-right">
+    <button class="topbar-icon-btn">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2a6 6 0 016 6c0 2.5-1 4.5-2 6l1 4H5l1-4c-1-1.5-2-3.5-2-6a6 6 0 016-6z"/><path d="M8 18a2 2 0 004 0"/></svg>
+    </button>
+    <button class="topbar-store-btn">
+      <div class="store-avatar">DPD</div>
+      <span>Diesel Parts Direct</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ADMIN CHROME — SIDEBAR
+     ═══════════════════════════════════════════════════════════════ -->
+<aside class="admin-sidebar">
+  <ul class="sidebar-nav">
+    <li><a class="sidebar-nav-item" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2L2 8v10h6v-6h4v6h6V8L10 2z"/></svg>Home</a></li>
+    <li><a class="sidebar-nav-item" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 3h14a1 1 0 011 1v1H2V4a1 1 0 011-1zm-1 4h16v9a2 2 0 01-2 2H4a2 2 0 01-2-2V7zm4 2v2h2V9H6zm4 0v2h2V9h-2z"/></svg>
+      Orders <span class="nav-badge">14</span></a></li>
+    <li><a class="sidebar-nav-item" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 00-1 1v1H3v12h14V5h-3V4a1 1 0 00-1-1H7zm0 2h6v1H7V5zM5 9h10v1H5V9zm0 3h7v1H5v-1z"/></svg>
+      Products</a></li>
+    <li><a class="sidebar-nav-item" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z"/></svg>
+      Customers</a></li>
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M3 3h14v14H3V3zm2 2v10h10V5H5z"/></svg>
+      Content</a></li>
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 4v4h3l-4 5V9H7l4-5v2z"/></svg>
+      Finance</a></li>
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M2 4h16v2H2V4zm0 5h10v2H2V9zm0 5h14v2H2v-2z"/></svg>
+      Analytics</a></li>
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M10 2l2.4 4.8L18 8l-4 3.9.9 5.6L10 14.7l-4.9 2.8.9-5.6L2 8l5.6-1.2L10 2z"/></svg>
+      Marketing</a></li>
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M4 4h12v2H4V4zm2 4h8v2H6V8zm1 4h6v2H7v-2z"/></svg>
+      Discounts</a></li>
+  </ul>
+
+  <div class="sidebar-section-label">Sales channels</div>
+  <ul class="sidebar-nav">
+    <li><a class="sidebar-nav-item dimmed" href="#">
+      <svg viewBox="0 0 20 20" fill="currentColor" opacity="0.5"><path d="M3 2h14a1 1 0 011 1v14a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm1 2v12h12V4H4z"/></svg>
+      Online Store</a></li>
+  </ul>
+
+  <div class="sidebar-section-label">Apps</div>
+  <ul class="sidebar-nav">
+    <li><a class="sidebar-nav-item active" href="#" onclick="return false;">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-1 4h2v4.5l3 1.8-.9 1.6L9.5 12V6z"/></svg>
+      Sales Rep Portal</a></li>
+  </ul>
+  <ul class="sidebar-sub-items" id="sidebar-subnav">
+    <li><a class="sidebar-sub-item active" id="nav-place-order" onclick="window.switchView('place-order')">Place Order</a></li>
+    <li><a class="sidebar-sub-item" id="nav-order-history" onclick="window.switchView('order-history')">Order History</a></li>
+  </ul>
+</aside>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MAIN CONTENT AREA
+     ═══════════════════════════════════════════════════════════════ -->
+<main class="admin-main" id="admin-main">
+  <div class="toast-container" id="toast-container"></div>
+  <div class="admin-content">
+
+    <!-- App Header (always visible) -->
+    <div class="app-header">
+      <div class="app-header-title">Sales Rep Portal</div>
+      <div class="app-header-user">
+        <div class="app-header-user-icon">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z"/></svg>
+        </div>
+        Logged in as: <strong>Sean Morrison (SM)</strong>
+      </div>
+    </div>
+
+    <!-- ════════ PLACE ORDER VIEW ════════ -->
+    <div id="view-place-order">
+      <!-- Context Bar (Steps 2-4) -->
+      <div id="context-bar" class="context-bar view-hidden">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7l-5-5H6zm0 2h4v4h4v8H6V4z"/></svg>
+        <span>Cart: <strong id="ctx-items">0 items</strong> · Subtotal: <strong id="ctx-subtotal">$0.00</strong></span>
+      </div>
+
+      <!-- Stepper (Steps 2-4) -->
+      <div id="stepper-wrap" class="view-hidden">
+        <div class="stepper" id="stepper"></div>
+      </div>
+
+      <!-- Step 1: Search & Build Cart -->
+      <div id="step-1">
+        <div class="split-layout">
+          <div class="split-left">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Product Lookup</div>
+                  <div class="card-subtitle">Search parts by number, name, or keyword</div>
+                </div>
+              </div>
+              <div class="search-input-wrap">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
+                <input class="form-input" id="product-search" type="text" placeholder="Search by part number, OEM number, or description..." oninput="window.onProductSearch(this.value)">
+              </div>
+              <div id="search-results" class="mt-16">
+                <div class="empty-state">Enter a part number or keyword to begin.</div>
+              </div>
+            </div>
+          </div>
+          <div class="split-right">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Current Cart</div>
+                <div class="card-badge" id="cart-count-badge">0 items</div>
+              </div>
+              <div id="cart-items">
+                <div class="empty-state">No items in cart yet. Search and add products to get started.</div>
+              </div>
+              <div id="cart-footer" class="view-hidden">
+                <div class="cart-subtotal">
+                  <div class="cart-subtotal-label">Subtotal</div>
+                  <div class="cart-subtotal-value" id="cart-subtotal">$0.00</div>
+                </div>
+                <div class="cart-note">Tax and shipping calculated in review step</div>
+              </div>
+              <div class="mt-16">
+                <button class="btn-primary btn-full" id="btn-to-step2" onclick="window.goToStep(2)" disabled>Continue to Customer Info →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Customer Info -->
+      <div id="step-2" class="view-hidden">
+        <div class="centered-narrow">
+          <div class="card">
+            <div class="card-header mb-0">
+              <div class="card-title">Customer</div>
+            </div>
+            <div class="tab-toggle mt-12 mb-16">
+              <button class="tab-toggle-btn active" id="tab-existing" onclick="window.switchCustomerMode('existing')">Find Existing</button>
+              <button class="tab-toggle-btn" id="tab-new" onclick="window.switchCustomerMode('new')">Create New</button>
+            </div>
+
+            <!-- Mode A: Search Existing -->
+            <div id="customer-search-mode">
+              <div id="customer-selected-view" class="view-hidden"></div>
+              <div id="customer-search-view">
+                <div class="search-input-wrap">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
+                  <input class="form-input" id="customer-search" type="text" placeholder="Search by customer name or email..." oninput="window.onCustomerSearch(this.value)">
+                </div>
+                <div id="customer-results" class="mt-12">
+                  <div class="empty-state" style="padding:20px 16px">Type to search existing customers.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode B: Create New -->
+            <div id="customer-new-mode" class="view-hidden">
+              <div id="new-customer-selected-view" class="view-hidden"></div>
+              <div id="new-customer-form">
+                <div id="duplicate-email-banner" class="banner-info view-hidden mb-16"></div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">First Name *</label>
+                    <input class="form-input" id="nf-firstname" placeholder="First name" oninput="window.updateNewCustomerField('firstName',this.value)">
+                    <div class="form-error view-hidden" id="err-firstname">First name is required</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Last Name *</label>
+                    <input class="form-input" id="nf-lastname" placeholder="Last name" oninput="window.updateNewCustomerField('lastName',this.value)">
+                    <div class="form-error view-hidden" id="err-lastname">Last name is required</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Company Name</label>
+                  <input class="form-input" id="nf-company" placeholder="Company name" oninput="window.updateNewCustomerField('company',this.value)">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input class="form-input" id="nf-email" type="email" placeholder="email@example.com" oninput="window.updateNewCustomerField('email',this.value)">
+                    <div class="form-error view-hidden" id="err-email">Email is required</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input class="form-input" id="nf-phone" placeholder="Phone number" oninput="window.updateNewCustomerField('phone',this.value)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Address</label>
+                  <input class="form-input" id="nf-address" placeholder="Street address" oninput="window.updateNewCustomerField('address1',this.value)">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input class="form-input" id="nf-city" placeholder="City" oninput="window.updateNewCustomerField('city',this.value)">
+                  </div>
+                  <div class="form-group" style="max-width:120px">
+                    <label class="form-label">State</label>
+                    <input class="form-input" id="nf-state" placeholder="State" oninput="window.updateNewCustomerField('state',this.value)">
+                  </div>
+                  <div class="form-group" style="max-width:120px">
+                    <label class="form-label">ZIP</label>
+                    <input class="form-input" id="nf-zip" placeholder="ZIP" oninput="window.updateNewCustomerField('zip',this.value)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Country</label>
+                  <select class="form-select" id="nf-country" onchange="window.updateNewCustomerField('country',this.value)">
+                    <option value="US" selected>United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="MX">Mexico</option>
+                  </select>
+                </div>
+                <button class="btn-primary mt-8" onclick="window.saveNewCustomer()">Save Customer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn-secondary" onclick="window.goToStep(1)">← Back to Cart</button>
+            <button class="btn-primary" id="btn-to-step3" onclick="window.goToStep(3)" disabled>Continue to Review →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Review & Place Order -->
+      <div id="step-3" class="view-hidden">
+        <div class="centered-medium">
+          <div class="card" id="review-summary-card"></div>
+          <div class="card">
+            <div class="card-header mb-0">
+              <div class="card-title">Order Notes</div>
+            </div>
+            <div class="card-subtitle mb-8">Notes are visible to staff and saved on the order.</div>
+            <textarea class="form-textarea" placeholder="Add internal notes, special instructions, core return info..." oninput="window.state.orderNotes=this.value"></textarea>
+          </div>
+          <div class="card">
+            <div class="card-header mb-0">
+              <div class="card-title">Sales Attribution</div>
+            </div>
+            <div class="banner-info mt-12">📋 This order will be tagged: <strong>sales-rep:SM</strong> — attributed to Sean Morrison</div>
+            <div class="card-subtitle mt-8">Attribution is automatically applied from your staff login. No action needed.</div>
+          </div>
+          <div class="card">
+            <div class="card-header mb-0">
+              <div class="card-title">Payment Method</div>
+            </div>
+            <div class="mt-12" id="payment-options"></div>
+          </div>
+          <div class="nav-row">
+            <button class="btn-secondary" onclick="window.goToStep(2)">← Back to Customer</button>
+            <button class="btn-primary" id="btn-place-order" onclick="window.placeOrder()">Place Order →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Confirmation -->
+      <div id="step-4" class="view-hidden">
+        <div class="centered-narrow">
+          <div id="confirmation-banner"></div>
+          <div class="card" id="confirmation-details"></div>
+          <div class="nav-row nav-row-center">
+            <button class="btn-secondary" onclick="window.showToast('Would open order in Shopify Admin','info')">View in Shopify Admin</button>
+            <button class="btn-secondary" onclick="window.showToast('Print dialog would open','info')">Print Order Summary</button>
+            <button class="btn-primary" onclick="window.placeAnotherOrder()">Place Another Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ ORDER HISTORY VIEW ════════ -->
+    <div id="view-order-history" class="view-hidden">
+      <div style="margin-bottom:16px">
+        <div style="font-size:16px;font-weight:700;color:#1a1a1a">Order History</div>
+        <div style="font-size:13px;color:#919191;margin-top:2px">Orders placed through the Sales Rep Portal</div>
+      </div>
+      <div class="card mb-16">
+        <div class="filter-bar">
+          <div class="search-input-wrap" style="flex:1;max-width:220px">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
+            <input class="form-input" id="history-search" placeholder="Search orders..." oninput="window.onHistorySearch(this.value)">
+          </div>
+          <select class="form-select" id="history-rep-filter" onchange="window.onHistoryRepFilter(this.value)">
+            <option value="all">All Sales Reps</option>
+            <option value="SM">Sean Morrison</option>
+            <option value="TB">Tom Baker</option>
+            <option value="AK">Alan Khan</option>
+          </select>
+          <select class="form-select" id="history-status-filter" onchange="window.onHistoryStatusFilter(this.value)">
+            <option value="all">All Statuses</option>
+            <option value="PAID">Paid</option>
+            <option value="INVOICE_SENT">Invoice Sent</option>
+            <option value="PENDING">Pending</option>
+          </select>
+          <span style="font-size:12px;color:#919191;margin-left:auto">Last 30 days</span>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table class="data-grid" id="history-table">
+          <thead>
+            <tr>
+              <th>Order #</th><th>Date</th><th>Customer</th><th>Rep</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th><th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MOCK DATA
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+const PRODUCTS = [
+  { id:'p1', title:'CAT 3406E Fuel Injector — Reman', partNumber:'0R-3418', price:245.00, stock:12, stockStatus:'in-stock' },
+  { id:'p2', title:'Cummins ISX15 Turbocharger', partNumber:'4955850', price:789.00, stock:3, stockStatus:'low-stock' },
+  { id:'p3', title:'Detroit DD15 EGR Cooler', partNumber:'A4721400475', price:425.00, stock:8, stockStatus:'in-stock' },
+  { id:'p4', title:'CAT C15 Water Pump', partNumber:'10R-2130', price:165.00, stock:0, stockStatus:'out-of-stock' },
+  { id:'p5', title:'Cummins ISB 6.7 Oil Cooler', partNumber:'3975818', price:312.00, stock:5, stockStatus:'in-stock' },
+  { id:'p6', title:'Detroit DD13 Injector', partNumber:'A4710700887', price:398.00, stock:2, stockStatus:'low-stock' },
+  { id:'p7', title:'International DT466 Fuel Pump', partNumber:'1842722C91', price:575.00, stock:6, stockStatus:'in-stock' },
+  { id:'p8', title:'CAT 3406E Exhaust Manifold', partNumber:'1005033', price:189.00, stock:15, stockStatus:'in-stock' },
+  { id:'p9', title:'Cummins N14 Thermostat Kit', partNumber:'3069777', price:48.50, stock:22, stockStatus:'in-stock' },
+  { id:'p10', title:'Detroit Series 60 Head Gasket Set', partNumber:'23532333', price:127.00, stock:0, stockStatus:'out-of-stock' },
+];
+
+const CUSTOMERS = [
+  { id:'c1', company:'Gulf Coast Diesel Repair', firstName:'John', lastName:'Thibodaux', email:'john@gulfcoastdiesel.com', phone:'225-555-0142', address:'4210 Plank Rd', city:'Baton Rouge', state:'LA', zip:'70805', country:'US' },
+  { id:'c2', company:'Midwest Fleet Services', firstName:'Karen', lastName:'Andersen', email:'karen@midwestfleet.com', phone:'314-555-0198', address:'880 Industrial Dr', city:'St. Louis', state:'MO', zip:'63101', country:'US' },
+  { id:'c3', company:'Bayou Trucking & Equipment', firstName:'Marcus', lastName:'Landry', email:'marcus@bayoutrucking.com', phone:'337-555-0167', address:'1250 Hwy 90 E', city:'Lafayette', state:'LA', zip:'70508', country:'US' },
+  { id:'c4', company:'Delta Heavy Haul LLC', firstName:'Robert', lastName:'Fontenot', email:'rob@deltaheavyhaul.com', phone:'225-555-0213', address:'700 River Rd', city:'Gonzales', state:'LA', zip:'70737', country:'US' },
+  { id:'c5', company:'Magnolia Power Systems', firstName:'Patricia', lastName:'Breaux', email:'pat@magnoliapwr.com', phone:'504-555-0189', address:'320 Tchoupitoulas St', city:'New Orleans', state:'LA', zip:'70130', country:'US' },
+];
+
+const SALES_REPS = [
+  { id:'sr1', name:'Sean Morrison', initials:'SM' },
+  { id:'sr2', name:'Tom Baker', initials:'TB' },
+  { id:'sr3', name:'Alan Khan', initials:'AK' },
+];
+const CURRENT_REP = SALES_REPS[0];
+
+const ORDER_HISTORY = [
+  { id:'DPD-10472', date:'03/19/2026', customer:'Gulf Coast Diesel Repair', rep:'SM', items:3, total:940.25, status:'PAID' },
+  { id:'DPD-10471', date:'03/19/2026', customer:'Bayou Trucking & Equipment', rep:'SM', items:1, total:789.00, status:'INVOICE_SENT' },
+  { id:'DPD-10468', date:'03/18/2026', customer:'Midwest Fleet Services', rep:'TB', items:5, total:1247.50, status:'PAID' },
+  { id:'DPD-10465', date:'03/18/2026', customer:'Delta Heavy Haul LLC', rep:'AK', items:2, total:633.00, status:'PAID' },
+  { id:'DPD-10461', date:'03/17/2026', customer:'Magnolia Power Systems', rep:'SM', items:4, total:1580.00, status:'PENDING' },
+  { id:'DPD-10458', date:'03/17/2026', customer:'Gulf Coast Diesel Repair', rep:'TB', items:1, total:245.00, status:'PAID' },
+  { id:'DPD-10452', date:'03/16/2026', customer:'Bayou Trucking & Equipment', rep:'SM', items:6, total:2134.75, status:'PAID' },
+  { id:'DPD-10449', date:'03/15/2026', customer:'Delta Heavy Haul LLC', rep:'AK', items:2, total:476.00, status:'INVOICE_SENT' },
+  { id:'DPD-10445', date:'03/14/2026', customer:'Midwest Fleet Services', rep:'TB', items:3, total:912.00, status:'PAID' },
+  { id:'DPD-10440', date:'03/13/2026', customer:'Magnolia Power Systems', rep:'SM', items:1, total:575.00, status:'PAID' },
+];
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     APP LOGIC
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+'use strict';
+
+/* ───── STATE ───── */
+const state = {
+  currentView: 'place-order',
+  currentStep: 1,
+  completedSteps: new Set(),
+  searchQuery: '',
+  cart: [],
+  selectedCustomer: null,
+  isNewCustomer: false,
+  newCustomerForm: { firstName:'', lastName:'', company:'', email:'', phone:'', address1:'', city:'', state:'', zip:'', country:'US' },
+  customerSearchMode: 'existing',
+  customerSearchQuery: '',
+  paymentMethod: 'invoice',
+  orderNotes: '',
+  historySearchQuery: '',
+  historyRepFilter: 'all',
+  historyStatusFilter: 'all',
+  placingOrder: false,
+};
+window.state = state;
+
+/* ───── HELPERS ───── */
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const fmt = (n) => '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+function getCartSubtotal() {
+  return state.cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+}
+function getCartItemCount() {
+  return state.cart.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+/* ───── TOAST SYSTEM ───── */
+let toastId = 0;
+window.showToast = function(message, type = 'success') {
+  const container = $('#toast-container');
+  const id = 'toast-' + (++toastId);
+  const div = document.createElement('div');
+  div.id = id;
+  div.className = 'toast toast-' + type;
+  div.textContent = message;
+  container.appendChild(div);
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }
+  }, 3000);
+};
+
+/* ───── VIEW SWITCHING ───── */
+window.switchView = function(view) {
+  state.currentView = view;
+  $('#view-place-order').classList.toggle('view-hidden', view !== 'place-order');
+  $('#view-order-history').classList.toggle('view-hidden', view !== 'order-history');
+  $('#nav-place-order').classList.toggle('active', view === 'place-order');
+  $('#nav-order-history').classList.toggle('active', view === 'order-history');
+  if (view === 'order-history') renderOrderHistory();
+  $('#admin-main').scrollTop = 0;
+};
+
+/* ───── STEP NAVIGATION ───── */
+window.goToStep = function(step) {
+  if (step === 3 && state.cart.length === 0) {
+    showToast('Cart is empty. Please add items before placing an order.', 'error');
+    window.goToStep(1);
+    return;
+  }
+  if (step > state.currentStep) {
+    state.completedSteps.add(state.currentStep);
+  }
+  state.currentStep = step;
+  renderStep();
+  $('#admin-main').scrollTop = 0;
+};
+
+function renderStep() {
+  const s = state.currentStep;
+  ['step-1','step-2','step-3','step-4'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('view-hidden', (i + 1) !== s);
+  });
+  // Context bar visible on steps 2-4
+  $('#context-bar').classList.toggle('view-hidden', s < 2);
+  updateContextBar();
+  // Stepper visible on steps 2-4
+  $('#stepper-wrap').classList.toggle('view-hidden', s < 2);
+  if (s >= 2) renderStepper();
+  // Render specific step content
+  if (s === 2) renderStep2();
+  if (s === 3) renderStep3();
+  if (s === 4) renderStep4();
+}
+
+function renderStepper() {
+  const steps = ['Cart', 'Customer', 'Review', 'Confirm'];
+  let html = '';
+  steps.forEach((label, i) => {
+    const num = i + 1;
+    const isCompleted = state.completedSteps.has(num) || num < state.currentStep;
+    const isActive = num === state.currentStep;
+    const cls = isCompleted ? 'completed' : (isActive ? 'active' : 'inactive');
+    const groupCls = isCompleted ? 'completed' : (isActive ? 'active' : '');
+    html += `<div class="step-group ${groupCls}">`;
+    html += `<div class="step-dot ${cls}">${isCompleted ? '✓' : num}</div>`;
+    html += `<div class="step-label">${label}</div></div>`;
+    if (i < steps.length - 1) {
+      html += `<div class="step-connector ${isCompleted ? 'completed' : ''}"></div>`;
+    }
+  });
+  $('#stepper').innerHTML = html;
+}
+
+function updateContextBar() {
+  const count = state.cart.length;
+  const subtotal = getCartSubtotal();
+  $('#ctx-items').textContent = count + ' item' + (count !== 1 ? 's' : '');
+  $('#ctx-subtotal').textContent = fmt(subtotal);
+}
+
+/* ───── STEP 1: PRODUCT SEARCH ───── */
+let searchTimeout = null;
+window.onProductSearch = function(val) {
+  state.searchQuery = val.trim();
+  clearTimeout(searchTimeout);
+  if (!state.searchQuery) {
+    $('#search-results').innerHTML = '<div class="empty-state">Enter a part number or keyword to begin.</div>';
+    return;
+  }
+  $('#search-results').innerHTML = '<div class="empty-state" style="animation:pulse 1s infinite alternate">Searching...</div>';
+  searchTimeout = setTimeout(() => {
+    const q = state.searchQuery.toLowerCase();
+    const results = PRODUCTS.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.partNumber.toLowerCase().includes(q)
+    );
+    renderSearchResults(results);
+  }, 300);
+};
+
+function renderSearchResults(results) {
+  if (results.length === 0) {
+    $('#search-results').innerHTML = `<div class="empty-state">No products found for '${state.searchQuery}'. Try a different part number or keyword.</div>`;
+    return;
+  }
+  let html = '';
+  results.forEach(p => {
+    const inCart = state.cart.find(c => c.product.id === p.id);
+    const badgeCls = p.stockStatus === 'in-stock' ? 'badge-green' : (p.stockStatus === 'low-stock' ? 'badge-yellow' : 'badge-red');
+    const badgeText = p.stockStatus === 'in-stock' ? 'In Stock' : (p.stockStatus === 'low-stock' ? `Low Stock: ${p.stock} left` : 'Out of Stock');
+    const disabled = p.stockStatus === 'out-of-stock';
+    html += `<div class="product-row">
+      <div class="product-img-placeholder">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm1 2v4l3-2 3 2V5h2v10H5V5z"/></svg>
+      </div>
+      <div class="product-info">
+        <div class="product-title">${p.title}</div>
+        <div class="product-part">Part #: ${p.partNumber}</div>
+      </div>
+      <div class="product-meta">
+        <span class="badge ${badgeCls}">${badgeText}</span>
+        <span class="product-price">${fmt(p.price)}</span>
+        <button class="btn-add" id="add-btn-${p.id}" onclick="window.addToCart('${p.id}')" ${disabled ? 'disabled' : ''}>${disabled ? 'Out of Stock' : 'Add'}</button>
+      </div>
+    </div>`;
+  });
+  $('#search-results').innerHTML = html;
+}
+
+/* ───── CART MANAGEMENT ───── */
+window.addToCart = function(productId) {
+  const product = PRODUCTS.find(p => p.id === productId);
+  if (!product || product.stockStatus === 'out-of-stock') {
+    showToast('This item is currently out of stock.', 'error');
+    return;
+  }
+  const existing = state.cart.find(c => c.product.id === productId);
+  if (existing) {
+    if (existing.quantity < product.stock) {
+      existing.quantity++;
+    } else {
+      showToast(`Only ${product.stock} available`, 'error');
+      return;
+    }
+  } else {
+    state.cart.push({ product, quantity: 1 });
+  }
+  // Button feedback
+  const btn = document.getElementById('add-btn-' + productId);
+  if (btn) {
+    btn.textContent = '✓ Added';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Add'; btn.classList.remove('added'); }, 800);
+  }
+  showToast(`${product.title} added to cart`);
+  renderCart();
+};
+
+window.removeFromCart = function(productId) {
+  const item = state.cart.find(c => c.product.id === productId);
+  state.cart = state.cart.filter(c => c.product.id !== productId);
+  if (item) showToast('Item removed from cart.', 'info');
+  renderCart();
+};
+
+window.updateCartQty = function(productId, val) {
+  const item = state.cart.find(c => c.product.id === productId);
+  if (!item) return;
+  let qty = parseInt(val) || 1;
+  if (qty < 1) qty = 1;
+  if (qty > item.product.stock) {
+    qty = item.product.stock;
+    // Show stock warning
+    const warn = document.getElementById('stock-warn-' + productId);
+    if (warn) warn.classList.remove('view-hidden');
+  } else {
+    const warn = document.getElementById('stock-warn-' + productId);
+    if (warn) warn.classList.add('view-hidden');
+  }
+  item.quantity = qty;
+  renderCart();
+};
+
+function renderCart() {
+  const cartEl = $('#cart-items');
+  const footer = $('#cart-footer');
+  const badge = $('#cart-count-badge');
+  const btnStep2 = $('#btn-to-step2');
+
+  if (state.cart.length === 0) {
+    cartEl.innerHTML = '<div class="empty-state">No items in cart yet. Search and add products to get started.</div>';
+    footer.classList.add('view-hidden');
+    badge.textContent = '0 items';
+    btnStep2.disabled = true;
+    return;
+  }
+
+  badge.textContent = state.cart.length + ' item' + (state.cart.length !== 1 ? 's' : '');
+  btnStep2.disabled = false;
+  footer.classList.remove('view-hidden');
+
+  let html = '';
+  state.cart.forEach(item => {
+    const lineTotal = item.product.price * item.quantity;
+    html += `<div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-title">${item.product.title}</div>
+        <div class="cart-item-part">${item.product.partNumber}</div>
+        ${item.quantity >= item.product.stock ? `<div class="stock-warning" id="stock-warn-${item.product.id}">Only ${item.product.stock} available</div>` : `<div class="stock-warning view-hidden" id="stock-warn-${item.product.id}">Only ${item.product.stock} available</div>`}
+      </div>
+      <input type="number" class="cart-qty-input" value="${item.quantity}" min="1" max="${item.product.stock}" onchange="window.updateCartQty('${item.product.id}', this.value)" onblur="window.updateCartQty('${item.product.id}', this.value)">
+      <div class="cart-item-price">${fmt(lineTotal)}</div>
+      <button class="cart-remove" onclick="window.removeFromCart('${item.product.id}')" title="Remove">✕</button>
+    </div>`;
+  });
+  cartEl.innerHTML = html;
+  $('#cart-subtotal').textContent = fmt(getCartSubtotal());
+  updateContextBar();
+}
+
+/* ───── STEP 2: CUSTOMER ───── */
+window.switchCustomerMode = function(mode) {
+  state.customerSearchMode = mode;
+  $('#tab-existing').classList.toggle('active', mode === 'existing');
+  $('#tab-new').classList.toggle('active', mode === 'new');
+  $('#customer-search-mode').classList.toggle('view-hidden', mode !== 'existing');
+  $('#customer-new-mode').classList.toggle('view-hidden', mode !== 'new');
+};
+
+function renderStep2() {
+  updateStep2Button();
+  if (state.selectedCustomer && state.customerSearchMode === 'existing') {
+    renderSelectedCustomer('customer-selected-view', 'customer-search-view');
+  } else if (state.selectedCustomer && state.isNewCustomer) {
+    renderSelectedCustomer('new-customer-selected-view', 'new-customer-form');
+  }
+}
+
+function renderSelectedCustomer(selectedViewId, formViewId) {
+  const c = state.selectedCustomer;
+  document.getElementById(formViewId).classList.add('view-hidden');
+  const view = document.getElementById(selectedViewId);
+  view.classList.remove('view-hidden');
+  view.innerHTML = `<div class="customer-selected-card">
+    <div class="customer-selected-header">
+      <span class="badge badge-green">✓ Customer selected</span>
+      <a href="#" onclick="window.changeCustomer('${selectedViewId}','${formViewId}');return false;" style="font-size:13px">Change</a>
+    </div>
+    <div class="customer-detail-row"><strong>${c.company || (c.firstName + ' ' + c.lastName)}</strong></div>
+    <div class="customer-detail-row">${c.firstName} ${c.lastName}</div>
+    <div class="customer-detail-row">${c.email}</div>
+    ${c.phone ? `<div class="customer-detail-row">${c.phone}</div>` : ''}
+    ${c.address ? `<div class="customer-detail-row">${c.address}, ${c.city}, ${c.state} ${c.zip}</div>` : ''}
+  </div>`;
+}
+
+window.changeCustomer = function(selectedViewId, formViewId) {
+  state.selectedCustomer = null;
+  state.isNewCustomer = false;
+  document.getElementById(selectedViewId).classList.add('view-hidden');
+  document.getElementById(formViewId).classList.remove('view-hidden');
+  updateStep2Button();
+};
+
+let customerSearchTimeout = null;
+window.onCustomerSearch = function(val) {
+  state.customerSearchQuery = val.trim();
+  clearTimeout(customerSearchTimeout);
+  if (!state.customerSearchQuery) {
+    $('#customer-results').innerHTML = '<div class="empty-state" style="padding:20px 16px">Type to search existing customers.</div>';
+    return;
+  }
+  customerSearchTimeout = setTimeout(() => {
+    const q = state.customerSearchQuery.toLowerCase();
+    const results = CUSTOMERS.filter(c =>
+      c.company.toLowerCase().includes(q) ||
+      c.firstName.toLowerCase().includes(q) ||
+      c.lastName.toLowerCase().includes(q) ||
+      c.email.toLowerCase().includes(q)
+    );
+    renderCustomerResults(results);
+  }, 200);
+};
+
+function renderCustomerResults(results) {
+  if (results.length === 0) {
+    $('#customer-results').innerHTML = `<div class="empty-state" style="padding:20px 16px">No customer found. <a href="#" onclick="window.switchCustomerMode('new');return false;">Create a new customer</a> instead.</div>`;
+    return;
+  }
+  let html = '';
+  results.forEach(c => {
+    const initials = c.firstName[0] + c.lastName[0];
+    html += `<div class="customer-result" onclick="window.selectCustomer('${c.id}')">
+      <div class="customer-avatar">${initials}</div>
+      <div class="customer-result-info">
+        <div class="customer-result-company">${c.company}</div>
+        <div class="customer-result-name">${c.firstName} ${c.lastName} · ${c.email}</div>
+      </div>
+    </div>`;
+  });
+  $('#customer-results').innerHTML = html;
+}
+
+window.selectCustomer = function(customerId) {
+  state.selectedCustomer = CUSTOMERS.find(c => c.id === customerId);
+  state.isNewCustomer = false;
+  showToast(`Customer selected: ${state.selectedCustomer.company}`);
+  renderSelectedCustomer('customer-selected-view', 'customer-search-view');
+  updateStep2Button();
+};
+
+window.updateNewCustomerField = function(field, value) {
+  state.newCustomerForm[field] = value;
+  // Check duplicate email
+  if (field === 'email' && value) {
+    const dup = CUSTOMERS.find(c => c.email.toLowerCase() === value.toLowerCase());
+    const banner = $('#duplicate-email-banner');
+    if (dup) {
+      banner.classList.remove('view-hidden');
+      banner.innerHTML = `A customer with this email already exists (<strong>${dup.company}</strong>). <button class="btn-secondary btn-sm" style="margin-left:8px" onclick="window.switchCustomerMode('existing');window.selectCustomer('${dup.id}')">Select Existing Customer</button>`;
+    } else {
+      banner.classList.add('view-hidden');
+    }
+  }
+};
+
+window.saveNewCustomer = function() {
+  const f = state.newCustomerForm;
+  let hasError = false;
+
+  // Validate required fields
+  ['firstname','lastname','email'].forEach(field => {
+    const key = field === 'firstname' ? 'firstName' : (field === 'lastname' ? 'lastName' : field);
+    const input = document.getElementById('nf-' + field);
+    const err = document.getElementById('err-' + field);
+    if (!f[key].trim()) {
+      input.classList.add('error');
+      err.classList.remove('view-hidden');
+      hasError = true;
+    } else {
+      input.classList.remove('error');
+      err.classList.add('view-hidden');
+    }
+  });
+
+  // Validate email format
+  if (f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) {
+    document.getElementById('nf-email').classList.add('error');
+    document.getElementById('err-email').textContent = 'Please enter a valid email address';
+    document.getElementById('err-email').classList.remove('view-hidden');
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  state.selectedCustomer = {
+    id: 'new-' + Date.now(),
+    company: f.company || (f.firstName + ' ' + f.lastName),
+    firstName: f.firstName,
+    lastName: f.lastName,
+    email: f.email,
+    phone: f.phone,
+    address: f.address1,
+    city: f.city,
+    state: f.state,
+    zip: f.zip,
+    country: f.country
+  };
+  state.isNewCustomer = true;
+  showToast(`Customer created: ${state.selectedCustomer.company}`);
+  renderSelectedCustomer('new-customer-selected-view', 'new-customer-form');
+  updateStep2Button();
+};
+
+function updateStep2Button() {
+  const btn = $('#btn-to-step3');
+  if (btn) btn.disabled = !state.selectedCustomer;
+}
+
+/* ───── STEP 3: REVIEW ───── */
+function renderStep3() {
+  if (state.cart.length === 0) {
+    window.goToStep(1);
+    showToast('Cart is empty. Please add items before placing an order.', 'error');
+    return;
+  }
+  const c = state.selectedCustomer;
+  const subtotal = getCartSubtotal();
+  const tax = Math.round(subtotal * 0.08 * 100) / 100;
+  const shipping = state.paymentMethod === 'invoice' ? 0 : 24.95;
+  const shippingText = state.paymentMethod === 'invoice' ? 'Calculated at checkout' : fmt(shipping);
+  const total = subtotal + tax + (state.paymentMethod === 'invoice' ? 0 : shipping);
+
+  let linesHtml = '';
+  state.cart.forEach(item => {
+    linesHtml += `<tr>
+      <td>${item.product.title}</td>
+      <td style="color:#616161">${item.product.partNumber}</td>
+      <td class="num">${item.quantity}</td>
+      <td class="num">${fmt(item.product.price)}</td>
+      <td class="num">${fmt(item.product.price * item.quantity)}</td>
+    </tr>`;
+  });
+
+  $('#review-summary-card').innerHTML = `
+    <div class="card-header mb-0"><div class="card-title">Order Summary</div></div>
+    <div style="display:flex;gap:32px;margin-top:12px;font-size:13px">
+      <div style="flex:1">
+        <div style="color:#919191;font-size:12px;font-weight:600;text-transform:uppercase;margin-bottom:4px">Customer</div>
+        <div style="font-weight:600">${c.company || (c.firstName + ' ' + c.lastName)}</div>
+        <div style="color:#616161">${c.firstName} ${c.lastName}</div>
+        <div style="color:#616161">${c.email}</div>
+      </div>
+      <div style="flex:1">
+        <div style="color:#919191;font-size:12px;font-weight:600;text-transform:uppercase;margin-bottom:4px">Shipping Address</div>
+        <div style="color:#616161">${c.address || '—'}</div>
+        <div style="color:#616161">${c.city ? (c.city + ', ' + c.state + ' ' + c.zip) : '—'}</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <table class="data-grid">
+      <thead><tr><th>Product</th><th>Part #</th><th style="text-align:right">Qty</th><th style="text-align:right">Unit Price</th><th style="text-align:right">Line Total</th></tr></thead>
+      <tbody>${linesHtml}</tbody>
+    </table>
+    <div class="totals-section">
+      <div class="totals-row"><span class="totals-label">Subtotal</span><span class="totals-value">${fmt(subtotal)}</span></div>
+      <div class="totals-row"><span class="totals-label">Estimated Tax</span><span class="totals-value">${fmt(tax)}</span></div>
+      <div class="totals-row"><span class="totals-label">Shipping</span><span class="totals-value">${shippingText}</span></div>
+      <div class="totals-row total-grand"><span>Total</span><span class="totals-value">${fmt(total)}</span></div>
+    </div>`;
+
+  // Payment options
+  const options = [
+    { key:'invoice', label:'Send Invoice to Customer', desc:'Customer receives an email with a secure Shopify checkout link. They enter their own payment info and complete the purchase.', badge:'Recommended' },
+    { key:'take-payment', label:'Take Payment Now', desc:'Opens Shopify checkout where you can enter the customer\'s credit card details over the phone.', badge:'' },
+    { key:'mark-paid', label:'Mark as Paid', desc:'For payments already received externally (wire transfer, check, cash). Order is created and marked as paid immediately.', badge:'' }
+  ];
+  let payHtml = '';
+  options.forEach(opt => {
+    const sel = state.paymentMethod === opt.key ? 'selected' : '';
+    payHtml += `<div class="payment-option ${sel}" onclick="window.selectPayment('${opt.key}')">
+      <div class="payment-radio"></div>
+      <div>
+        <div class="payment-label">${opt.label} ${opt.badge ? `<span class="badge badge-blue" style="margin-left:6px">${opt.badge}</span>` : ''}</div>
+        <div class="payment-desc">${opt.desc}</div>
+      </div>
+    </div>`;
+  });
+  $('#payment-options').innerHTML = payHtml;
+}
+
+window.selectPayment = function(method) {
+  state.paymentMethod = method;
+  renderStep3();
+};
+
+/* ───── PLACE ORDER ───── */
+window.placeOrder = function() {
+  if (state.placingOrder) return;
+  state.placingOrder = true;
+  const btn = $('#btn-place-order');
+  btn.innerHTML = '<span class="spinner"></span> Placing Order...';
+  btn.disabled = true;
+  setTimeout(() => {
+    state.placingOrder = false;
+    showToast('Order created successfully!');
+    window.goToStep(4);
+  }, 1500);
+};
+
+/* ───── STEP 4: CONFIRMATION ───── */
+function renderStep4() {
+  const c = state.selectedCustomer;
+  const subtotal = getCartSubtotal();
+  const tax = Math.round(subtotal * 0.08 * 100) / 100;
+  const shipping = state.paymentMethod === 'invoice' ? 0 : 24.95;
+  const total = subtotal + tax + (state.paymentMethod === 'invoice' ? 0 : shipping);
+
+  const pmLabels = { 'invoice': 'Invoice Sent', 'take-payment': 'Paid', 'mark-paid': 'Paid' };
+  const pmBadge = state.paymentMethod === 'invoice' ? 'badge-blue' : 'badge-green';
+  const bannerMsg = state.paymentMethod === 'invoice'
+    ? 'Order #DPD-10472 created successfully and invoice sent to customer.'
+    : (state.paymentMethod === 'take-payment' ? 'Order #DPD-10472 created successfully and payment processed.' : 'Order #DPD-10472 created successfully and marked as paid.');
+
+  $('#confirmation-banner').innerHTML = `<div class="banner-success-lg">✅ ${bannerMsg}</div>`;
+
+  $('#confirmation-details').innerHTML = `
+    <div class="card-header mb-0"><div class="card-title">Order Details</div></div>
+    <div class="detail-grid mt-16">
+      <div class="detail-label">Order Number</div><div class="detail-value" style="font-weight:600">#DPD-10472</div>
+      <div class="detail-label">Date</div><div class="detail-value">March 19, 2026</div>
+      <div class="detail-label">Customer</div><div class="detail-value">${c.company || c.firstName + ' ' + c.lastName} (${c.email})</div>
+      <div class="detail-label">Items</div><div class="detail-value">${state.cart.length} items</div>
+      <div class="detail-label">Total</div><div class="detail-value" style="font-weight:700;font-size:15px">${fmt(total)}</div>
+      <div class="detail-label">Sales Rep</div><div class="detail-value">Sean Morrison (SM)</div>
+      <div class="detail-label">Payment Status</div><div class="detail-value"><span class="badge ${pmBadge}">${pmLabels[state.paymentMethod]}</span></div>
+      <div class="detail-label">Order Confirmation</div><div class="detail-value">Sent to ${c.email} <a href="#" onclick="window.showToast('Confirmation resent to ${c.email}');return false;" style="margin-left:8px;font-size:12px">Resend</a></div>
+    </div>`;
+}
+
+window.placeAnotherOrder = function() {
+  state.currentStep = 1;
+  state.completedSteps.clear();
+  state.cart = [];
+  state.selectedCustomer = null;
+  state.isNewCustomer = false;
+  state.newCustomerForm = { firstName:'', lastName:'', company:'', email:'', phone:'', address1:'', city:'', state:'', zip:'', country:'US' };
+  state.customerSearchMode = 'existing';
+  state.customerSearchQuery = '';
+  state.paymentMethod = 'invoice';
+  state.orderNotes = '';
+  state.searchQuery = '';
+  state.placingOrder = false;
+  // Reset UI fields
+  if ($('#product-search')) $('#product-search').value = '';
+  if ($('#customer-search')) $('#customer-search').value = '';
+  $('#search-results').innerHTML = '<div class="empty-state">Enter a part number or keyword to begin.</div>';
+  // Reset customer views
+  $('#customer-selected-view').classList.add('view-hidden');
+  $('#customer-search-view').classList.remove('view-hidden');
+  $('#new-customer-selected-view').classList.add('view-hidden');
+  $('#new-customer-form').classList.remove('view-hidden');
+  window.switchCustomerMode('existing');
+  // Reset new customer form fields
+  ['firstname','lastname','company','email','phone','address','city','state','zip'].forEach(id => {
+    const el = document.getElementById('nf-' + id);
+    if (el) el.value = '';
+  });
+  $('#duplicate-email-banner').classList.add('view-hidden');
+  renderCart();
+  renderStep();
+  window.switchView('place-order');
+};
+
+/* ───── ORDER HISTORY ───── */
+window.onHistorySearch = function(val) { state.historySearchQuery = val.trim(); renderOrderHistory(); };
+window.onHistoryRepFilter = function(val) { state.historyRepFilter = val; renderOrderHistory(); };
+window.onHistoryStatusFilter = function(val) { state.historyStatusFilter = val; renderOrderHistory(); };
+
+function renderOrderHistory() {
+  const q = state.historySearchQuery.toLowerCase();
+  let data = ORDER_HISTORY.filter(o => {
+    if (q && !o.id.toLowerCase().includes(q) && !o.customer.toLowerCase().includes(q)) return false;
+    if (state.historyRepFilter !== 'all' && o.rep !== state.historyRepFilter) return false;
+    if (state.historyStatusFilter !== 'all' && o.status !== state.historyStatusFilter) return false;
+    return true;
+  });
+
+  const statusMap = { PAID: { label:'Paid', cls:'badge-green' }, INVOICE_SENT: { label:'Invoice Sent', cls:'badge-blue' }, PENDING: { label:'Pending', cls:'badge-yellow' } };
+
+  let html = '';
+  data.forEach(o => {
+    const s = statusMap[o.status];
+    html += `<tr>
+      <td style="font-weight:600">#${o.id}</td>
+      <td>${o.date}</td>
+      <td>${o.customer}</td>
+      <td><span class="rep-circle">${o.rep}</span></td>
+      <td>${o.items}</td>
+      <td class="num">${fmt(o.total)}</td>
+      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td class="actions"><a href="#" onclick="window.showToast('Would open order #${o.id} in Shopify Admin','info');return false;">View</a></td>
+    </tr>`;
+  });
+
+  if (data.length === 0) {
+    html = '<tr><td colspan="8" style="text-align:center;color:#919191;padding:32px">No orders found matching your filters.</td></tr>';
+  }
+  $('#history-tbody').innerHTML = html;
+}
+
+/* ───── INIT ───── */
+renderCart();
+renderStep();
+renderOrderHistory();
+
+})();
+</script>
+
+</body>
+</html>
