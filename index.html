@@ -587,10 +587,229 @@ button { cursor: pointer; }
 .admin-sidebar::-webkit-scrollbar { width: 6px; }
 .admin-sidebar::-webkit-scrollbar-track { background: transparent; }
 .admin-sidebar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGIN SCREEN
+   ═══════════════════════════════════════════════════════════════ */
+.login-screen {
+  position: fixed; inset: 0; z-index: 200;
+  background: #f1f1f1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; overflow-y: auto;
+}
+.login-card {
+  width: 100%; max-width: 400px;
+  background: #fff; border: 1px solid #e1e3e5; border-radius: 12px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.login-logo {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; margin-bottom: 22px;
+}
+.login-logo svg { width: 40px; height: 40px; margin-bottom: 12px; }
+.login-logo-title { font-size: 17px; font-weight: 700; color: #1a1a1a; }
+.login-logo-sub { font-size: 13px; color: #6d7175; margin-top: 2px; }
+.login-field { margin-bottom: 14px; }
+.login-field label {
+  display: block; font-size: 14px; font-weight: 500;
+  color: #202223; margin-bottom: 5px;
+}
+.login-field input {
+  width: 100%; height: 36px; padding: 0 12px;
+  border: 1px solid #c9cccf; border-radius: 8px;
+  font-size: 14px; color: #202223; background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.login-field input:focus {
+  outline: none; border-color: #005bd3;
+  box-shadow: 0 0 0 2px rgba(0,91,211,0.2);
+}
+.login-btn {
+  width: 100%; height: 36px; margin-top: 4px;
+  background: #202223; color: #fff; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: background 0.15s;
+}
+.login-btn:hover { background: #1a1a1a; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGE TONES (Polaris)
+   ═══════════════════════════════════════════════════════════════ */
+.badge-info { background: #eff5ff; color: #00527c; }
+.badge-subdued { background: #ebebeb; color: #6d7175; }
+
+/* ═══════════════════════════════════════════════════════════════
+   POLARIS BANNER TONES
+   ═══════════════════════════════════════════════════════════════ */
+.p-banner {
+  border-radius: 8px; padding: 12px 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; line-height: 1.4;
+}
+.p-banner-icon { flex-shrink: 0; font-size: 15px; line-height: 1.2; }
+.p-banner-body { flex: 1; }
+.p-banner-title { font-weight: 600; margin-bottom: 2px; }
+.p-banner-info { background: #eff5ff; color: #00527c; }
+.p-banner-success { background: #e7f6ed; color: #1f7a3f; }
+.p-banner-warning { background: #fdf4d6; color: #8a6116; }
+.p-banner-critical { background: #fdf1f0; color: #c0341d; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCOUNT POPOVER (app header)
+   ═══════════════════════════════════════════════════════════════ */
+.account-trigger {
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid transparent; border-radius: 8px;
+  padding: 4px 8px; cursor: pointer; font-size: 13px; color: #303030;
+  transition: background 0.12s, border-color 0.12s;
+}
+.account-trigger:hover { background: #f1f1f1; border-color: #e3e3e3; }
+.account-trigger .chev { font-size: 9px; color: #919191; margin-left: 2px; }
+.account-popover-wrap { position: relative; }
+.account-popover {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 120;
+  width: 240px; background: #fff;
+  border: 1px solid #e1e3e5; border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 6px;
+}
+.account-popover-header {
+  display: flex; align-items: center; gap: 10px; padding: 10px 10px 12px;
+}
+.account-popover-name { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+.account-popover-email { font-size: 12px; color: #6d7175; margin-top: 1px; }
+.account-popover-divider { border: none; border-top: 1px solid #e3e3e3; margin: 4px 0; }
+.account-popover-action {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; font-size: 13px;
+  color: #303030; cursor: pointer; transition: background 0.12s;
+}
+.account-popover-action:hover { background: #f1f1f1; }
+.account-popover-action svg { width: 16px; height: 16px; opacity: 0.7; }
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL (Polaris)
+   ═══════════════════════════════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 60px 20px; overflow-y: auto;
+}
+.modal-box {
+  width: 100%; max-width: 520px; background: #fff;
+  border-radius: 8px; box-shadow: 0 6px 28px rgba(0,0,0,0.2);
+  animation: modalIn 0.18s ease-out;
+}
+@keyframes modalIn { from { transform: translateY(-8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid #e1e3e5;
+}
+.modal-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+.modal-close {
+  background: none; border: none; font-size: 20px; line-height: 1;
+  color: #6d7175; cursor: pointer; padding: 0 4px;
+}
+.modal-close:hover { color: #303030; }
+.modal-body { padding: 20px; }
+.modal-footer {
+  display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  padding: 14px 20px; border-top: 1px solid #e1e3e5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTION MENU (row actions)
+   ═══════════════════════════════════════════════════════════════ */
+.action-menu-wrap { position: relative; display: inline-block; }
+.action-menu-btn {
+  background: #fff; border: 1px solid #c9cccf; border-radius: 8px;
+  width: 30px; height: 30px; cursor: pointer; color: #303030;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; line-height: 1; transition: background 0.12s;
+}
+.action-menu-btn:hover { background: #f6f6f7; }
+.action-menu {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 60;
+  min-width: 170px; background: #fff;
+  border: 1px solid #e1e3e5; border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 6px;
+}
+.action-menu-item {
+  display: block; width: 100%; text-align: left;
+  padding: 8px 10px; border-radius: 8px; font-size: 13px;
+  color: #303030; cursor: pointer; background: none; border: none;
+  transition: background 0.12s;
+}
+.action-menu-item:hover { background: #f1f1f1; }
+.action-menu-item.critical { color: #c0341d; }
+
+/* Avatar circle (manage reps) */
+.rep-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #e3e3e3; font-size: 11px; font-weight: 700; color: #616161;
+  flex-shrink: 0;
+}
+.rep-name-cell { display: flex; align-items: center; gap: 10px; }
+.rep-row-inactive td { opacity: 0.55; }
+
+/* View heading row */
+.view-heading-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 16px;
+}
 </style>
 </head>
 
 <body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LOGIN SCREEN
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 0C6.268 0 0 6.268 0 14c0 4.662 2.28 8.793 5.784 11.337L14 32l8.216-6.663C25.72 22.793 28 18.662 28 14 28 6.268 21.732 0 14 0zm0 20a6 6 0 110-12 6 6 0 010 12z" fill="#95BF47"/>
+      </svg>
+      <div class="login-logo-title">Sales Rep Portal</div>
+      <div class="login-logo-sub">Diesel Parts Direct</div>
+    </div>
+
+    <div id="login-error" class="p-banner p-banner-critical view-hidden" style="margin-bottom:16px">
+      <span class="p-banner-icon">⚠️</span>
+      <div class="p-banner-body">Invalid email or password</div>
+    </div>
+
+    <form id="login-form" onsubmit="window.attemptLogin(event)">
+      <div class="login-field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" autocomplete="username" placeholder="you@dieselpartsdirect.com">
+      </div>
+      <div class="login-field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" autocomplete="current-password" placeholder="Password">
+      </div>
+      <button type="submit" class="login-btn">Log in</button>
+    </form>
+
+    <div class="p-banner p-banner-info" style="margin-top:18px">
+      <span class="p-banner-icon">ℹ️</span>
+      <div class="p-banner-body">
+        <div class="p-banner-title">Demo credentials</div>
+        <div>Admin — admin@dieselpartsdirect.com / admin123</div>
+        <div>Sales Rep — sean@dieselpartsdirect.com / rep123</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PORTAL SHELL (hidden until login)
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="portal-shell" class="view-hidden">
 
 <!-- ═══════════════════════════════════════════════════════════════
      ADMIN CHROME — TOP BAR
@@ -665,6 +884,7 @@ button { cursor: pointer; }
   <ul class="sidebar-sub-items" id="sidebar-subnav">
     <li><a class="sidebar-sub-item active" id="nav-place-order" onclick="window.switchView('place-order')">Place Order</a></li>
     <li><a class="sidebar-sub-item" id="nav-order-history" onclick="window.switchView('order-history')">Order History</a></li>
+    <li id="nav-manage-reps-li" class="view-hidden"><a class="sidebar-sub-item" id="nav-manage-reps" onclick="window.switchView('manage-reps')">Manage Reps</a></li>
   </ul>
 </aside>
 
@@ -678,11 +898,9 @@ button { cursor: pointer; }
     <!-- App Header (always visible) -->
     <div class="app-header">
       <div class="app-header-title">Sales Rep Portal</div>
-      <div class="app-header-user">
-        <div class="app-header-user-icon">
-          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z"/></svg>
-        </div>
-        Logged in as: <strong>Sean Morrison (SM)</strong>
+      <div class="account-popover-wrap">
+        <button class="account-trigger" id="account-trigger" onclick="window.toggleAccountPopover(event)"></button>
+        <div class="account-popover view-hidden" id="account-popover"></div>
       </div>
     </div>
 
@@ -855,7 +1073,7 @@ button { cursor: pointer; }
             <div class="card-header mb-0">
               <div class="card-title">Sales Attribution</div>
             </div>
-            <div class="banner-info mt-12">📋 This order will be tagged: <strong>sales-rep:SM</strong> — attributed to Sean Morrison</div>
+            <div class="banner-info mt-12" id="attribution-banner">📋 This order will be tagged: <strong>sales-rep:SM</strong></div>
             <div class="card-subtitle mt-8">Attribution is automatically applied from your staff login. No action needed.</div>
           </div>
           <div class="card">
@@ -915,8 +1133,8 @@ button { cursor: pointer; }
       <div class="card" style="padding:0;overflow:hidden">
         <table class="data-grid" id="history-table">
           <thead>
-            <tr>
-              <th>Order #</th><th>Date</th><th>Customer</th><th>Rep</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th><th style="text-align:right">Actions</th>
+            <tr id="history-head-row">
+              <th>Order #</th><th>Date</th><th>Customer</th><th class="history-rep-col">Rep</th><th>Items</th><th style="text-align:right">Total</th><th>Status</th><th style="text-align:right">Actions</th>
             </tr>
           </thead>
           <tbody id="history-tbody"></tbody>
@@ -924,8 +1142,42 @@ button { cursor: pointer; }
       </div>
     </div>
 
+    <!-- ════════ MANAGE REPS VIEW (admin only) ════════ -->
+    <div id="view-manage-reps" class="view-hidden">
+      <div id="manage-reps-denied" class="p-banner p-banner-critical view-hidden mb-16">
+        <span class="p-banner-icon">⛔</span>
+        <div class="p-banner-body">You don't have permission to view this page.</div>
+      </div>
+      <div id="manage-reps-content">
+        <div class="view-heading-row">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a">Sales Reps</div>
+            <div style="font-size:13px;color:#919191;margin-top:2px">Add and manage sales reps who can place orders on behalf of customers</div>
+          </div>
+          <button class="btn-primary" onclick="window.openRepModal()">Add Sales Rep</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="data-grid" id="reps-table">
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th style="text-align:right">Orders (30d)</th><th>Last Active</th><th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reps-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
+
+</div><!-- /portal-shell -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MODALS (Manage Reps)
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="rep-modal-mount"></div>
 
 <!-- ═══════════════════════════════════════════════════════════════
      MOCK DATA
@@ -957,7 +1209,37 @@ const SALES_REPS = [
   { id:'sr2', name:'Tom Baker', initials:'TB' },
   { id:'sr3', name:'Alan Khan', initials:'AK' },
 ];
-const CURRENT_REP = SALES_REPS[0];
+
+// Login accounts
+const USERS = [
+  {
+    id: 'u1',
+    email: 'admin@dieselpartsdirect.com',
+    password: 'admin123',
+    name: 'Marshall Atchison',
+    initials: 'MA',
+    role: 'admin'
+  },
+  {
+    id: 'u2',
+    email: 'sean@dieselpartsdirect.com',
+    password: 'rep123',
+    name: 'Sean Morrison',
+    initials: 'SM',
+    role: 'sales_rep'
+  }
+];
+
+// Managed sales reps (Manage Reps view). Seeded with the existing reps,
+// the admin, plus a couple of inactive rows for badge variation.
+let REPS = [
+  { id:'r1', firstName:'Marshall', lastName:'Atchison', email:'admin@dieselpartsdirect.com', initials:'MA', role:'admin',     status:'active',   lastActive:'Just now' },
+  { id:'r2', firstName:'Sean',     lastName:'Morrison',  email:'sean@dieselpartsdirect.com',  initials:'SM', role:'sales_rep', status:'active',   lastActive:'2 hours ago' },
+  { id:'r3', firstName:'Tom',      lastName:'Baker',     email:'tom@dieselpartsdirect.com',   initials:'TB', role:'sales_rep', status:'active',   lastActive:'Yesterday' },
+  { id:'r4', firstName:'Alan',     lastName:'Khan',      email:'alan@dieselpartsdirect.com',  initials:'AK', role:'sales_rep', status:'active',   lastActive:'3 days ago' },
+  { id:'r5', firstName:'Diane',    lastName:'Wallace',   email:'diane@dieselpartsdirect.com', initials:'DW', role:'sales_rep', status:'inactive', lastActive:'2 weeks ago' },
+  { id:'r6', firstName:'Greg',     lastName:'Olsen',     email:'greg@dieselpartsdirect.com',  initials:'GO', role:'sales_rep', status:'inactive', lastActive:'1 month ago' },
+];
 
 const ORDER_HISTORY = [
   { id:'DPD-10472', date:'03/19/2026', customer:'Gulf Coast Diesel Repair', rep:'SM', items:3, total:940.25, status:'PAID' },
@@ -982,6 +1264,7 @@ const ORDER_HISTORY = [
 
 /* ───── STATE ───── */
 const state = {
+  currentUser: null,
   currentView: 'place-order',
   currentStep: 1,
   completedSteps: new Set(),
@@ -1033,12 +1316,29 @@ window.showToast = function(message, type = 'success') {
 
 /* ───── VIEW SWITCHING ───── */
 window.switchView = function(view) {
+  // Defense in depth: admin-only view. Should never fire through normal UI.
+  if (view === 'manage-reps' && (!state.currentUser || state.currentUser.role !== 'admin')) {
+    state.currentView = 'manage-reps';
+    $('#view-place-order').classList.add('view-hidden');
+    $('#view-order-history').classList.add('view-hidden');
+    $('#view-manage-reps').classList.remove('view-hidden');
+    $('#manage-reps-content').classList.add('view-hidden');
+    $('#manage-reps-denied').classList.remove('view-hidden');
+    $('#admin-main').scrollTop = 0;
+    return;
+  }
+  $('#manage-reps-denied').classList.add('view-hidden');
+  $('#manage-reps-content').classList.remove('view-hidden');
+
   state.currentView = view;
   $('#view-place-order').classList.toggle('view-hidden', view !== 'place-order');
   $('#view-order-history').classList.toggle('view-hidden', view !== 'order-history');
+  $('#view-manage-reps').classList.toggle('view-hidden', view !== 'manage-reps');
   $('#nav-place-order').classList.toggle('active', view === 'place-order');
   $('#nav-order-history').classList.toggle('active', view === 'order-history');
+  $('#nav-manage-reps').classList.toggle('active', view === 'manage-reps');
   if (view === 'order-history') renderOrderHistory();
+  if (view === 'manage-reps') renderRepsTable();
   $('#admin-main').scrollTop = 0;
 };
 
@@ -1465,6 +1765,12 @@ function renderStep3() {
 
   renderConfirmationEmailSection();
 
+  // Sales attribution (from logged-in user)
+  const repInitials = state.currentUser ? state.currentUser.initials : '';
+  const repName = state.currentUser ? state.currentUser.name : '';
+  const attrBanner = $('#attribution-banner');
+  if (attrBanner) attrBanner.innerHTML = `📋 This order will be tagged: <strong>sales-rep:${repInitials}</strong> — attributed to ${repName}`;
+
   // Payment options
   const options = [
     { key:'invoice', label:'Send Invoice to Customer', desc:'Customer receives an email with a secure Shopify checkout link. They enter their own payment info and complete the purchase.', badge:'Recommended' },
@@ -1602,7 +1908,7 @@ function renderStep4() {
       <div class="detail-label">Customer</div><div class="detail-value">${c.company || c.firstName + ' ' + c.lastName} (${c.email})</div>
       <div class="detail-label">Items</div><div class="detail-value">${state.cart.length} items</div>
       <div class="detail-label">Total</div><div class="detail-value" style="font-weight:700;font-size:15px">${fmt(total)}</div>
-      <div class="detail-label">Sales Rep</div><div class="detail-value">Sean Morrison (SM)</div>
+      <div class="detail-label">Sales Rep</div><div class="detail-value">${state.currentUser ? state.currentUser.name + ' (' + state.currentUser.initials + ')' : '—'}</div>
       <div class="detail-label">Payment Status</div><div class="detail-value"><span class="badge ${pmBadge}">${pmLabels[state.paymentMethod]}</span></div>
       <div class="detail-label">Order Confirmation</div><div class="detail-value">Sent to ${c.email} <a href="#" onclick="window.showToast('Confirmation resent to ${c.email}');return false;" style="margin-left:8px;font-size:12px">Resend</a></div>
     </div>`;
@@ -1650,15 +1956,25 @@ window.onHistoryRepFilter = function(val) { state.historyRepFilter = val; render
 window.onHistoryStatusFilter = function(val) { state.historyStatusFilter = val; renderOrderHistory(); };
 
 function renderOrderHistory() {
+  const isAdmin = state.currentUser && state.currentUser.role === 'admin';
+
+  // Role-based UI: sales reps don't see the rep filter or rep column.
+  const repFilter = $('#history-rep-filter');
+  if (repFilter) repFilter.classList.toggle('view-hidden', !isAdmin);
+  $$('.history-rep-col').forEach(el => el.classList.toggle('view-hidden', !isAdmin));
+
   const q = state.historySearchQuery.toLowerCase();
   let data = ORDER_HISTORY.filter(o => {
+    // Sales reps only ever see their own orders.
+    if (!isAdmin && state.currentUser && o.rep !== state.currentUser.initials) return false;
     if (q && !o.id.toLowerCase().includes(q) && !o.customer.toLowerCase().includes(q)) return false;
-    if (state.historyRepFilter !== 'all' && o.rep !== state.historyRepFilter) return false;
+    if (isAdmin && state.historyRepFilter !== 'all' && o.rep !== state.historyRepFilter) return false;
     if (state.historyStatusFilter !== 'all' && o.status !== state.historyStatusFilter) return false;
     return true;
   });
 
   const statusMap = { PAID: { label:'Paid', cls:'badge-green' }, INVOICE_SENT: { label:'Invoice Sent', cls:'badge-blue' }, PENDING: { label:'Pending', cls:'badge-yellow' } };
+  const colspan = isAdmin ? 8 : 7;
 
   let html = '';
   data.forEach(o => {
@@ -1667,7 +1983,7 @@ function renderOrderHistory() {
       <td style="font-weight:600">#${o.id}</td>
       <td>${o.date}</td>
       <td>${o.customer}</td>
-      <td><span class="rep-circle">${o.rep}</span></td>
+      <td class="history-rep-col${isAdmin ? '' : ' view-hidden'}"><span class="rep-circle">${o.rep}</span></td>
       <td>${o.items}</td>
       <td class="num">${fmt(o.total)}</td>
       <td><span class="badge ${s.cls}">${s.label}</span></td>
@@ -1676,10 +1992,294 @@ function renderOrderHistory() {
   });
 
   if (data.length === 0) {
-    html = '<tr><td colspan="8" style="text-align:center;color:#919191;padding:32px">No orders found matching your filters.</td></tr>';
+    html = `<tr><td colspan="${colspan}" style="text-align:center;color:#919191;padding:32px">No orders found matching your filters.</td></tr>`;
   }
   $('#history-tbody').innerHTML = html;
 }
+
+/* ───── BADGE HELPERS ───── */
+function roleBadge(role) {
+  return role === 'admin'
+    ? '<span class="badge badge-info">Admin</span>'
+    : '<span class="badge badge-subdued">Sales Rep</span>';
+}
+function statusBadge(status) {
+  return status === 'active'
+    ? '<span class="badge badge-green">Active</span>'
+    : '<span class="badge badge-subdued">Inactive</span>';
+}
+
+/* ───── LOGIN / LOGOUT ───── */
+window.attemptLogin = function(event) {
+  event.preventDefault();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+  const user = USERS.find(u => u.email.toLowerCase() === email && u.password === password);
+  if (!user) {
+    document.getElementById('login-error').classList.remove('view-hidden');
+    return;
+  }
+  document.getElementById('login-error').classList.add('view-hidden');
+  state.currentUser = user;
+  document.getElementById('login-screen').classList.add('view-hidden');
+  document.getElementById('portal-shell').classList.remove('view-hidden');
+  applyRole();
+  renderAccountTrigger();
+  window.switchView('place-order');
+};
+
+window.doLogout = function() {
+  window.placeAnotherOrder();        // reset cart, steps, customer, payment
+  state.currentUser = null;
+  closeAccountPopover();
+  document.getElementById('portal-shell').classList.add('view-hidden');
+  document.getElementById('login-screen').classList.remove('view-hidden');
+  document.getElementById('login-password').value = '';
+};
+
+/* ───── ROLE APPLICATION ───── */
+function applyRole() {
+  const isAdmin = state.currentUser && state.currentUser.role === 'admin';
+  $('#nav-manage-reps-li').classList.toggle('view-hidden', !isAdmin);
+}
+
+/* ───── ACCOUNT POPOVER ───── */
+function renderAccountTrigger() {
+  const u = state.currentUser;
+  if (!u) return;
+  $('#account-trigger').innerHTML = `
+    <span class="rep-avatar" style="width:28px;height:28px;font-size:10px">${u.initials}</span>
+    <span>Logged in as <strong>${u.name} (${u.initials})</strong></span>
+    ${roleBadge(u.role)}
+    <span class="chev">▼</span>`;
+}
+
+window.toggleAccountPopover = function(e) {
+  e.stopPropagation();
+  const pop = $('#account-popover');
+  const wasHidden = pop.classList.contains('view-hidden');
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  if (wasHidden) { renderAccountPopover(); pop.classList.remove('view-hidden'); }
+  else pop.classList.add('view-hidden');
+};
+
+function renderAccountPopover() {
+  const u = state.currentUser;
+  if (!u) return;
+  $('#account-popover').innerHTML = `
+    <div class="account-popover-header">
+      <span class="rep-avatar">${u.initials}</span>
+      <div>
+        <div class="account-popover-name">${u.name}</div>
+        <div class="account-popover-email">${u.email}</div>
+        <div style="margin-top:4px">${roleBadge(u.role)}</div>
+      </div>
+    </div>
+    <hr class="account-popover-divider">
+    <div class="account-popover-action" onclick="window.doLogout()">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3H4a1 1 0 00-1 1v12a1 1 0 001 1h3"/><path d="M13 14l4-4-4-4"/><path d="M17 10H8"/></svg>
+      Log out
+    </div>`;
+}
+
+function closeAccountPopover() {
+  const pop = $('#account-popover');
+  if (pop) pop.classList.add('view-hidden');
+}
+
+/* ───── MANAGE REPS TABLE ───── */
+function repOrderCount(initials) {
+  return ORDER_HISTORY.filter(o => o.rep === initials).length;
+}
+
+function renderRepsTable() {
+  let html = '';
+  REPS.forEach(r => {
+    const fullName = r.firstName + ' ' + r.lastName;
+    html += `<tr class="${r.status === 'inactive' ? 'rep-row-inactive' : ''}">
+      <td>
+        <div class="rep-name-cell">
+          <span class="rep-avatar">${r.initials}</span>
+          <span style="font-weight:600">${fullName}</span>
+        </div>
+      </td>
+      <td style="color:#616161">${r.email}</td>
+      <td>${roleBadge(r.role)}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td class="num">${repOrderCount(r.initials)}</td>
+      <td style="color:#616161">${r.lastActive}</td>
+      <td class="actions">
+        <div class="action-menu-wrap">
+          <button class="action-menu-btn" onclick="window.toggleRepMenu(event,'${r.id}')">⋯</button>
+          <div class="action-menu view-hidden" id="rep-menu-${r.id}">
+            <button class="action-menu-item" onclick="window.openRepModal('${r.id}')">Edit</button>
+            ${r.status === 'active'
+              ? `<button class="action-menu-item critical" onclick="window.confirmDeactivate('${r.id}')">Deactivate</button>`
+              : `<button class="action-menu-item" onclick="window.activateRep('${r.id}')">Activate</button>`}
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  });
+  $('#reps-tbody').innerHTML = html;
+}
+
+window.toggleRepMenu = function(e, id) {
+  e.stopPropagation();
+  const menu = document.getElementById('rep-menu-' + id);
+  const wasHidden = menu.classList.contains('view-hidden');
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  if (wasHidden) menu.classList.remove('view-hidden');
+};
+
+/* ───── ADD / EDIT REP MODAL ───── */
+let repModalEditId = null;
+let repInitialsTouched = false;
+
+window.openRepModal = function(id) {
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  repModalEditId = id || null;
+  const r = id ? REPS.find(x => x.id === id) : null;
+  repInitialsTouched = !!r;
+  const title = r ? 'Edit Sales Rep' : 'Add Sales Rep';
+  const submitLabel = r ? 'Save Changes' : 'Add Sales Rep';
+  $('#rep-modal-mount').innerHTML = `
+    <div class="modal-backdrop" onclick="window.closeRepModal(event)">
+      <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title">${title}</div>
+          <button class="modal-close" onclick="window.closeRepModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="rep-form-error" class="p-banner p-banner-critical view-hidden" style="margin-bottom:14px">
+            <span class="p-banner-icon">⚠️</span><div class="p-banner-body" id="rep-form-error-msg"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name *</label>
+              <input class="form-input" id="rep-firstname" value="${r ? r.firstName : ''}" oninput="window.suggestInitials()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name *</label>
+              <input class="form-input" id="rep-lastname" value="${r ? r.lastName : ''}" oninput="window.suggestInitials()">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input class="form-input" id="rep-email" type="email" value="${r ? r.email : ''}" placeholder="email@dieselpartsdirect.com">
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="max-width:130px">
+              <label class="form-label">Initials *</label>
+              <input class="form-input" id="rep-initials" maxlength="3" value="${r ? r.initials : ''}" oninput="window.markInitialsTouched()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role *</label>
+              <select class="form-select" id="rep-role">
+                <option value="sales_rep" ${r && r.role === 'sales_rep' ? 'selected' : ''}>Sales Rep</option>
+                <option value="admin" ${r && r.role === 'admin' ? 'selected' : ''}>Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group mb-0">
+            <label class="form-label">${r ? 'Reset Password' : 'Initial Password *'}</label>
+            <input class="form-input" id="rep-password" type="text" placeholder="${r ? 'Leave blank to keep current password' : 'Set an initial password'}">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="window.closeRepModal()">Cancel</button>
+          <button class="btn-primary" onclick="window.submitRepForm()">${submitLabel}</button>
+        </div>
+      </div>
+    </div>`;
+};
+
+window.markInitialsTouched = function() { repInitialsTouched = true; };
+
+window.suggestInitials = function() {
+  if (repInitialsTouched) return;
+  const f = document.getElementById('rep-firstname').value.trim();
+  const l = document.getElementById('rep-lastname').value.trim();
+  document.getElementById('rep-initials').value = ((f[0] || '') + (l[0] || '')).toUpperCase();
+};
+
+window.closeRepModal = function() {
+  $('#rep-modal-mount').innerHTML = '';
+};
+
+window.submitRepForm = function() {
+  const firstName = document.getElementById('rep-firstname').value.trim();
+  const lastName  = document.getElementById('rep-lastname').value.trim();
+  const email     = document.getElementById('rep-email').value.trim();
+  const initials  = document.getElementById('rep-initials').value.trim().toUpperCase();
+  const role      = document.getElementById('rep-role').value;
+  const password  = document.getElementById('rep-password').value;
+  const showErr = (msg) => {
+    document.getElementById('rep-form-error-msg').textContent = msg;
+    document.getElementById('rep-form-error').classList.remove('view-hidden');
+  };
+
+  if (!firstName || !lastName || !email || !initials) { showErr('First name, last name, email, and initials are required.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr('Please enter a valid email address.'); return; }
+  if (!repModalEditId && !password) { showErr('An initial password is required for new reps.'); return; }
+  if (REPS.find(r => r.initials === initials && r.id !== repModalEditId)) {
+    showErr(`Initials "${initials}" are already in use. Please choose unique initials.`); return;
+  }
+
+  if (repModalEditId) {
+    const r = REPS.find(x => x.id === repModalEditId);
+    r.firstName = firstName; r.lastName = lastName; r.email = email; r.initials = initials; r.role = role;
+    showToast(`Sales rep updated: ${firstName} ${lastName}`);
+  } else {
+    REPS.push({ id:'r' + Date.now(), firstName, lastName, email, initials, role, status:'active', lastActive:'Just now' });
+    showToast(`Sales rep added: ${firstName} ${lastName}`);
+  }
+  closeRepModal();
+  renderRepsTable();
+};
+
+/* ───── DEACTIVATE / ACTIVATE ───── */
+window.confirmDeactivate = function(id) {
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  const r = REPS.find(x => x.id === id);
+  if (!r) return;
+  $('#rep-modal-mount').innerHTML = `
+    <div class="modal-backdrop" onclick="window.closeRepModal(event)">
+      <div class="modal-box" style="max-width:440px" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <div class="modal-title">Deactivate ${r.firstName} ${r.lastName}?</div>
+          <button class="modal-close" onclick="window.closeRepModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size:13px;color:#303030;line-height:1.5">${r.firstName} ${r.lastName} will no longer be able to log in or be assigned to orders.</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" onclick="window.closeRepModal()">Cancel</button>
+          <button class="btn-primary" style="background:#c0341d" onclick="window.deactivateRep('${id}')">Deactivate</button>
+        </div>
+      </div>
+    </div>`;
+};
+
+window.deactivateRep = function(id) {
+  const r = REPS.find(x => x.id === id);
+  if (r) { r.status = 'inactive'; showToast(`${r.firstName} ${r.lastName} deactivated`, 'info'); }
+  closeRepModal();
+  renderRepsTable();
+};
+
+window.activateRep = function(id) {
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  const r = REPS.find(x => x.id === id);
+  if (r) { r.status = 'active'; showToast(`${r.firstName} ${r.lastName} activated`); }
+  renderRepsTable();
+};
+
+/* ───── GLOBAL: close menus / popover on outside click ───── */
+document.addEventListener('click', function() {
+  $$('.action-menu').forEach(m => m.classList.add('view-hidden'));
+  closeAccountPopover();
+});
 
 /* ───── INIT ───── */
 renderCart();
